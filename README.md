@@ -1,1 +1,1 @@
-## Collaborators: Zachary Sutton, Jackson Nortin (projey boys)
+## Collaborators: Zachary Sutton, Jackson Nortin (projey boys!)
