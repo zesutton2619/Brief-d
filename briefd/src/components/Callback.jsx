@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 const Callback = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
 
   useEffect(() => {
     const getToken = async (code) => {
@@ -27,8 +29,18 @@ const Callback = () => {
       const { access_token } = response.data;
       localStorage.setItem('spotify_token', access_token);
 
-      // Redirect to the home page or another page
-      history.push('/');
+      // Fetch user data from Spotify
+      const userResponse = await axios.get('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      // Store user data in context
+      setUser(userResponse.data);
+
+      // Redirect to the dashboard page
+      navigate('/dashboard');
     };
 
     const search = window.location.search;
@@ -38,7 +50,7 @@ const Callback = () => {
     if (code) {
       getToken(code);
     }
-  }, [history]);
+  }, [navigate, setUser]);
 
   return <div>Loading...</div>;
 };
